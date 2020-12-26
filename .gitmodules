@@ -1,0 +1,6 @@
+[submodule "ext/zstd"]
+	path = ext/zstd
+	url = git@github.com:Olipro/zstd.git
+[submodule "ext/cityhash"]
+	path = ext/cityhash
+	url = git@github.com:google/cityhash.git
