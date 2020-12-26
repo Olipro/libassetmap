@@ -9,6 +9,7 @@
 namespace AssetMap {
 	class MemMappedBucket {
 		uint8_t* data;
+		MemMappedBucketEntry next;
 		const ICompress* comp			= nullptr;
 		const IDecompress* decomp = nullptr;
 
@@ -49,11 +50,11 @@ namespace AssetMap {
 
 		[[nodiscard]] MemMappedBucketEntry Append() noexcept;
 
-		[[nodiscard]] MemMappedBucketEntry operator[](std::string_view name);
+		[[nodiscard]] MemMappedBucketEntry operator[](std::string_view name) const;
 
-		[[nodiscard]] Iterator begin() noexcept;
+		[[nodiscard]] Iterator begin() const noexcept;
 
-		[[nodiscard]] Iterator end() noexcept;
+		[[nodiscard]] Iterator end() const noexcept;
 	};
 } // namespace AssetMap
 #endif // LIBASSETMAP_MEMMAPPEDBUCKET_H
