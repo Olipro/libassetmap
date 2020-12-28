@@ -40,6 +40,8 @@ namespace AssetMap {
 
 		IMemMapper& Resize(size_t size) override;
 
+		[[nodiscard]] const uint8_t* Get() const noexcept override;
+
 		[[nodiscard]] uint8_t* Get() noexcept override;
 
 		~MemMapper() noexcept override;

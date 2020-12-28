@@ -1,0 +1,48 @@
+skip_commits:
+  message: /\[CI skip\]/
+image:
+  - Visual Studio 2019
+  - Ubuntu2004
+environment:
+  GCC_VERSION: 9
+  access_token:
+    secure: lkhp17xIbcpBDd19p+FvtXRVGmXwvTSRlJuSDSf4JnWEtbZQweYpyRccXPETzZYE
+install:
+  - cmd: cinst llvm
+  - cmd: cinst ninja
+build_script:
+  - git submodule init
+  - git submodule update
+  - mkdir cmake-build-release
+  - cd cmake-build-release
+  - cmake -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_BUILD_TYPE=Release -G Ninja .. # Test clang on Windows & Linux
+  - cmake --build . --target assetmapcli
+  - cmake --build . --target testarchive
+  - cd ..
+  - mkdir cmake-build-local
+  - cd cmake-build-local
+  - sh: cmake -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_CXX_COMPILER=g++-9 -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS=-flto -DCMAKE_CXX_FLAGS=-flto -G Ninja .. # Test GCC on Linux
+  - cmd: cmake -DCMAKE_BUILD_TYPE=Release -G Ninja .. # Test MSVC on Windows
+  - cmake --build . --target assetmapcli
+  - cmake --build . --target testarchive
+  - cd ..
+test_script:
+  - cd cmake-build-release
+  - sh: ./testarchive
+  - cmd: testarchive.exe
+  - cd ../cmake-build-local
+  - sh: ./testarchive
+  - cmd: testarchive.exe
+deploy_script:
+  - sh: cd ../cmake-build-release
+  - sh: rm -rf html
+  - sh: git clone -b doc https://$access_token:x-oauth-basic@github.com/Olipro/libassetmap.git html
+  - sh: rm -rf html/*
+  - sh: cmake --build . --target libassetmap_doc
+  - sh: cd html
+  - sh: git config --global user.name "Appveyor"
+  - sh: git config --global user.email "appveyor@uptheinter.net"
+  - sh: git add -u && git add . && git commit -m "Documentation for $APPVEYOR_REPO_COMMIT" && if [ "$APPVEYOR_REPO_BRANCH" = "master" ]; then git push origin HEAD; fi || true
+  - sh: cd ..
+  - sh: rm -rf html
+

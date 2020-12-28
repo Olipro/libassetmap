@@ -14,7 +14,6 @@ set(LIBARCHIVEMAP_SIZE_TYPE uint32_t CACHE STRING "type to use for object sizes.
 include(ext/CityHash.cmake)
 
 add_library(libassetmap OBJECT
-    include/IFile.h
     include/IHasher.h
     include/MemOps.h
     ext/cityhash/src/city.cc ext/cityhash/src/city.h
@@ -54,6 +53,15 @@ target_include_directories(libassetmap
 target_include_directories(libassetmap
     PUBLIC
         include)
+
+find_package(Doxygen OPTIONAL_COMPONENTS dot)
+if (DOXYGEN_FOUND)
+    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
+    set(DOXYGEN_EXCLUDE_PATTERNS include/win/*)
+    doxygen_add_docs(libassetmap_doc
+        ${PROJECT_SOURCE_DIR}/README.md
+        ${PROJECT_SOURCE_DIR}/include)
+endif()
 
 file(DOWNLOAD https://github.com/CLIUtils/CLI11/releases/download/v1.9.1/CLI11.hpp
     ${CMAKE_CURRENT_BINARY_DIR}/CLI11.hpp

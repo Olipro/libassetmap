@@ -126,6 +126,11 @@ IMemMapper& MemMapper::Resize(size_t size) {
 	return *this;
 }
 
+const uint8_t* MemMapper::Get() const noexcept {
+	assert(mMap);
+	return static_cast<const uint8_t*>(mMap);
+}
+
 uint8_t* MemMapper::Get() noexcept {
 	assert(mMap);
 	return static_cast<uint8_t*>(mMap);

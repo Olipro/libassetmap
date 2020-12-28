@@ -32,7 +32,7 @@ bool MemMappedBucket::Iterator::operator!=(const Iterator& rhs) const noexcept {
 MemMappedBucket::MemMappedBucket(uint8_t* begin,
 																 uint8_t* bucketsTbl,
 																 lam_size_t id,
-																 const IDecompress& decomp) noexcept :
+																 IDecompress& decomp) noexcept :
 		data{begin + GetLamSizeT(bucketsTbl + (id * sizeof(lam_size_t)))},
 		next{data, decomp},
 		decomp{&decomp} {
@@ -44,7 +44,7 @@ MemMappedBucket::MemMappedBucket(uint8_t* begin,
 																 uint8_t* bucketsTbl,
 																 ptrdiff_t offset,
 																 lam_size_t bucketId,
-																 const ICompress& comp) noexcept :
+																 ICompress& comp) noexcept :
 		data{begin + offset}, next{data, comp}, comp{&comp} {
 	PutLamSizeT(bucketsTbl + (bucketId * sizeof(lam_size_t)), offset);
 	static_cast<void>(MemMappedBucketEntry{data, comp}.MakeNull());
@@ -55,8 +55,9 @@ MemMappedBucketEntry MemMappedBucket::Append() noexcept {
 }
 
 MemMappedBucketEntry MemMappedBucket::operator[](std::string_view name) const {
-	for (auto& entry : *this) {
-		if (entry.Name() == name)
+	for (auto i = begin(); i != end();) {
+		auto entry = *i;
+		if (++i == end() || entry.Name() == name)
 			return entry;
 	}
 	return MemMappedBucketEntry{nullptr};

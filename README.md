@@ -1,5 +1,9 @@
 # LibAssetMap
 
+[![Build status](https://ci.appveyor.com/api/projects/status/k227t4vg9ksici76?svg=true)](https://ci.appveyor.com/project/Olipro/libassetmap)
+
+[**Documentation**](https://olipro.github.io/libassetmap)
+
 LibAssetMap is a library designed to bundle together a hierarchy of files into a singular format. A CLI utility is provided which supports compression, decompression and printing information about an archive. All code is written in C++17.
 
 At compile time, a numeric size must be selected for storing metadata used for seeking to offsets. This defaults to `uint32_t` but can be customised by passing `-DLIBARCHIVEMAP_SIZE_TYPE` to CMake. With the default, you are limited to a total archive size of `2^32` - if you intend to create archives larger than 4GB set it to something bigger. You can freely also drop this to something like `uint16_t` if your archives will be very small. This value is used in `MemOps.h`.

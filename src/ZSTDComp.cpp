@@ -124,14 +124,14 @@ ZSTD& ZSTD::operator=(ZSTD&& rhs) noexcept {
 size_t ZSTD::Compress(const uint8_t* src,
 											size_t srcLen,
 											uint8_t* dst,
-											size_t dstLen) const {
+											size_t dstLen) {
 	return ZSTD_compress2(cCtx, dst, dstLen, src, srcLen);
 }
 
 size_t ZSTD::Decompress(const uint8_t* src,
 												size_t srcLen,
 												uint8_t* dst,
-												size_t dstLen) const {
+												size_t dstLen) {
 	return ZSTD_decompressDCtx(dCtx, dst, dstLen, src, srcLen);
 }
 

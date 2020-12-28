@@ -4,18 +4,16 @@
 
 using namespace AssetMap;
 
-MemMappedBucketEntry::MemMappedBucketEntry(uint8_t* data,
-																					 const ICompress& comp) :
+MemMappedBucketEntry::MemMappedBucketEntry(uint8_t* data, ICompress& comp) :
 		data{data}, comp{&comp} {}
 
-MemMappedBucketEntry::MemMappedBucketEntry(uint8_t* data,
-																					 const IDecompress& decomp) :
+MemMappedBucketEntry::MemMappedBucketEntry(uint8_t* data, IDecompress& decomp) :
 		data{data}, decomp{&decomp} {}
 
 MemMappedBucketEntry::MemMappedBucketEntry(std::nullptr_t) {}
 
 lam_size_t MemMappedBucketEntry::FileSize() const noexcept {
-	return GetLamSizeT(data);
+	return GetLamSizeT(data) - (Name().size() + 1);
 }
 
 size_t MemMappedBucketEntry::InMemorySize() const noexcept {
@@ -26,7 +24,7 @@ size_t MemMappedBucketEntry::InMemorySize() const noexcept {
 }
 
 void MemMappedBucketEntry::FileSize(lam_size_t size) {
-	PutLamSizeT(data, size);
+	PutLamSizeT(data, size + (Name().size() + 1));
 }
 
 lam_size_t MemMappedBucketEntry::DecompressedSize() const noexcept {
@@ -59,15 +57,14 @@ size_t MemMappedBucketEntry::Populate(std::string_view name,
 	return InMemorySize();
 }
 
-std::pair<std::unique_ptr<uint8_t[]>, size_t>
-		MemMappedBucketEntry::Retrieve() const {
+std::pair<std::unique_ptr<uint8_t[]>, size_t> MemMappedBucketEntry::Retrieve() {
 	auto len	= decomp->CalcDecompressSize(FileData(), FileSize());
 	auto ret	= std::make_unique<uint8_t[]>(len);
 	auto* buf = ret.get();
 	return {std::move(ret), Retrieve(buf, len)};
 }
 
-size_t MemMappedBucketEntry::Retrieve(uint8_t* buf, size_t len) const {
+size_t MemMappedBucketEntry::Retrieve(uint8_t* buf, size_t len) {
 	return decomp->Decompress(FileData(), FileSize(), buf, len);
 }
 
