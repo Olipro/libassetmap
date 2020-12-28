@@ -57,7 +57,7 @@ target_include_directories(libassetmap
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
 if (DOXYGEN_FOUND)
     set(DOXYGEN_USE_MDFILE_AS_MAINPAGE README.md)
-    set(DOXYGEN_EXCLUDE_PATTERNS include/win/*)
+    set(DOXYGEN_EXCLUDE_PATTERNS */include/win/*)
     doxygen_add_docs(libassetmap_doc
         ${PROJECT_SOURCE_DIR}/README.md
         ${PROJECT_SOURCE_DIR}/include)

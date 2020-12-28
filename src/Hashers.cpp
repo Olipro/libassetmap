@@ -19,5 +19,5 @@ size_t CityHash::CalcBucket(uint64_t hash, size_t bucketCount) const noexcept {
 
 [[nodiscard]] size_t
 		CityHash::CalcBucketsForItemCount(size_t count) const noexcept {
-	return count / bucketRatio;
+	return std::max(1.f, count / bucketRatio);
 }
