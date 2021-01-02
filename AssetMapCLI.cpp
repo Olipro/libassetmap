@@ -43,7 +43,7 @@ class AssetMapCLI {
 	fs::directory_entry dir;
 	fs::directory_entry file;
 	fs::directory_entry dict;
-	int exitCode;
+	int exitCode = 0;
 
 	void SetupDictionary(ZSTD& zstd) {
 		if ((rebuildDict || !dict.exists()) && zstd.CreateDictionary(dir)) {
